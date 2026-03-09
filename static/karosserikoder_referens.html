@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karosserikoder – Transportstyrelsen</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #181c27;
+    --surface2: #1e2333;
+    --border: #2a3045;
+    --accent: #4f8ef7;
+    --accent2: #38d9a9;
+    --accent3: #f7c948;
+    --accent4: #f76e6e;
+    --text: #e8ecf4;
+    --text-muted: #7a849e;
+    --text-dim: #4a5270;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #111827 0%, #1a2035 50%, #111827 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 40px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .header-logo {
+    width: 44px; height: 44px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+    box-shadow: 0 0 20px rgba(79,142,247,0.3);
+  }
+
+  .header-text h1 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--text);
+  }
+  .header-text p {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 1px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .header-badge {
+    margin-left: auto;
+    background: rgba(79,142,247,0.12);
+    border: 1px solid rgba(79,142,247,0.3);
+    color: var(--accent);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* LAYOUT */
+  .layout {
+    display: flex;
+    min-height: calc(100vh - 90px);
+  }
+
+  /* SIDEBAR NAV */
+  nav {
+    width: 220px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    position: sticky;
+    top: 90px;
+    height: calc(100vh - 90px);
+    overflow-y: auto;
+  }
+
+  nav .nav-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    padding: 0 20px 10px;
+    margin-top: 8px;
+  }
+
+  nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 20px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+    border-left: 3px solid transparent;
+  }
+
+  nav a:hover {
+    color: var(--text);
+    background: rgba(255,255,255,0.04);
+    border-left-color: var(--accent);
+  }
+
+  nav a .nav-icon { font-size: 15px; width: 20px; text-align: center; }
+
+  /* MAIN CONTENT */
+  main {
+    flex: 1;
+    padding: 32px 40px 60px;
+    max-width: 1000px;
+  }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 48px;
+    scroll-margin-top: 110px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+
+  .icon-blue   { background: rgba(79,142,247,0.15); }
+  .icon-green  { background: rgba(56,217,169,0.15); }
+  .icon-yellow { background: rgba(247,201,72,0.15); }
+  .icon-red    { background: rgba(247,110,110,0.15); }
+  .icon-purple { background: rgba(167,139,250,0.15); }
+  .icon-orange { background: rgba(251,146,60,0.15); }
+  .icon-teal   { background: rgba(45,212,191,0.15); }
+  .icon-pink   { background: rgba(244,114,182,0.15); }
+
+  .section-header h2 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.2px;
+  }
+
+  .section-header p {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 1px;
+  }
+
+  /* CARDS GRID */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 10px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    transition: all 0.15s ease;
+  }
+
+  .card:hover {
+    border-color: rgba(79,142,247,0.35);
+    background: var(--surface2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  }
+
+  .code-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 4px 9px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    min-width: 44px;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .badge-blue   { background: rgba(79,142,247,0.15); color: #7ab4ff; }
+  .badge-green  { background: rgba(56,217,169,0.15); color: #5ee8c0; }
+  .badge-yellow { background: rgba(247,201,72,0.15); color: #f7d060; }
+  .badge-red    { background: rgba(247,110,110,0.15); color: #ff9898; }
+  .badge-purple { background: rgba(167,139,250,0.15); color: #c4aaff; }
+  .badge-orange { background: rgba(251,146,60,0.15); color: #ffb07a; }
+  .badge-teal   { background: rgba(45,212,191,0.15); color: #5ee8dc; }
+  .badge-pink   { background: rgba(244,114,182,0.15); color: #ffaacc; }
+  .badge-gray   { background: rgba(120,130,155,0.15); color: #9ba3b8; }
+
+  .card-content { flex: 1; min-width: 0; }
+  .card-title { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.3; }
+  .card-desc { font-size: 11.5px; color: var(--text-muted); margin-top: 3px; line-height: 1.5; }
+
+  /* TABLE style for complex entries */
+  .table-grid {
+    display: grid;
+    gap: 8px;
+  }
+
+  .table-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    display: grid;
+    grid-template-columns: 60px 160px 1fr;
+    gap: 12px;
+    align-items: start;
+    transition: all 0.15s ease;
+  }
+
+  .table-row:hover {
+    border-color: rgba(79,142,247,0.3);
+    background: var(--surface2);
+  }
+
+  .row-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .row-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+  /* LEGACY / DEPRECATED */
+  .legacy-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 28px 0 14px;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .legacy-header::before, .legacy-header::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .legacy-tag {
+    background: rgba(120,130,155,0.1);
+    border: 1px dashed var(--text-dim);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    opacity: 0.7;
+  }
+
+  .legacy-tag .card-title { color: var(--text-muted); }
+
+  .cards-legacy { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 8px; }
+
+  /* TILLÄGGSKODER special layout */
+  .add-codes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 8px;
+  }
+
+  .add-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.15s ease;
+  }
+
+  .add-card:hover {
+    border-color: rgba(247,201,72,0.35);
+    background: var(--surface2);
+  }
+
+  .add-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--accent3);
+    width: 28px;
+    flex-shrink: 0;
+  }
+
+  .add-text { font-size: 12.5px; color: var(--text); font-weight: 500; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* PRINT STYLES */
+  @media print {
+    body { background: white; color: black; font-size: 11px; }
+    header { position: static; background: #f0f4ff; color: black; }
+    nav { display: none; }
+    main { padding: 20px; max-width: 100%; }
+    .card, .table-row, .add-card, .legacy-tag {
+      background: white !important;
+      border: 1px solid #ccc !important;
+      break-inside: avoid;
+    }
+    .code-badge { background: #e8f0ff !important; color: #1a3a8a !important; }
+    .card:hover, .table-row:hover { transform: none; box-shadow: none; }
+    .section { page-break-inside: avoid; }
+    .header-badge { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-logo">🚗</div>
+  <div class="header-text">
+    <h1>Karosserikoder</h1>
+    <p>Transportstyrelsen – Referensguide för besiktningstekniker</p>
+  </div>
+  <div class="header-badge">2026-02-13</div>
+</header>
+
+<div class="layout">
+
+  <nav>
+    <div class="nav-label">Fordonsslag</div>
+    <a href="#personbil"><span class="nav-icon">🚗</span> Personbil</a>
+    <a href="#buss"><span class="nav-icon">🚌</span> Buss</a>
+    <a href="#lastbil"><span class="nav-icon">🚛</span> Lastbil</a>
+    <a href="#slapfordon"><span class="nav-icon">🔗</span> Släpfordon</a>
+    <a href="#motorcykel"><span class="nav-icon">🏍️</span> Motorcykel</a>
+    <a href="#terrang"><span class="nav-icon">🌲</span> Terrängvagnar</a>
+    <a href="#traktor"><span class="nav-icon">🚜</span> Traktor</a>
+    <a href="#sarskilda"><span class="nav-icon">🚑</span> Särskilda ändamål</a>
+    <div class="nav-label">Övrigt</div>
+    <a href="#tillagg"><span class="nav-icon">➕</span> Tilläggskoder</a>
+  </nav>
+
+  <main>
+
+    <!-- PERSONBIL -->
+    <section class="section" id="personbil">
+      <div class="section-header">
+        <div class="section-icon icon-blue">🚗</div>
+        <div>
+          <h2>Personbil <span style="font-weight:300;color:var(--text-muted)">– Kategori M1</span></h2>
+          <p>Utformning enligt förordning (EU) 2018/858, Del C bilaga 1 & ISO 3833:1977</p>
+        </div>
+      </div>
+      <div class="cards">
+        <div class="card"><span class="code-badge badge-blue">AA</span><div class="card-content"><div class="card-title">Sedan</div><div class="card-desc">Minst fyra säten i två rader.</div></div></div>
+        <div class="card"><span class="code-badge badge-blue">AB</span><div class="card-content"><div class="card-title">Halvkombi</div><div class="card-desc">Minst fyra säten i två rader och halvkombibaklucka.</div></div></div>
+        <div class="card"><span class="code-badge badge-blue">AC</span><div class="card-content"><div class="card-title">Stationsvagn (kombivagn)</div><div class="card-desc">Minst fyra säten, förlängt bakparti. Säten kan fällas för större lastyta.</div></div></div>
+        <div class="card"><span class="code-badge badge-blue">AD</span><div class="card-content"><div class="card-title">Kupé</div><div class="card-desc">Minst fyra säten. Begränsat innerutrymme baktill. Två sidodörrar.</div></div></div>
+        <div class="card"><span class="code-badge badge-blue">AE</span><div class="card-content"><div class="card-title">Cabriolet</div><div class="card-desc">Öppningsbart tak i minst två lägen. Minst två säten i minst en rad.</div></div></div>
+        <div class="card"><span class="code-badge badge-blue">AF</span><div class="card-content"><div class="card-title">Fordon för flera ändamål</div><div class="card-desc">Annan än AA–AE och AG. Transport av personer och bagage i en avdelning.</div></div></div>
+        <div class="card"><span class="code-badge badge-blue">AG</span><div class="card-content"><div class="card-title">Lastkombi</div><div class="card-desc">Minst fyra säten. Bagageutrymmet helt separerat från passagerarutrymmet.</div></div></div>
+      </div>
+      <div class="legacy-header">Äldre nationella koder – används ej vid nyregistrering</div>
+      <div class="cards-legacy">
+        <div class="legacy-tag"><span class="code-badge badge-gray">01</span><div class="card-content"><div class="card-title">Täckt</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">02</span><div class="card-content"><div class="card-title">Öppet</div><div class="card-desc">Saknar tak eller nedfällbart/avlyftbart tak.</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">03</span><div class="card-content"><div class="card-title">Kombi</div><div class="card-desc">Sammanhängande lastutrymme med särskild lastöppning bakom förarutrymmet.</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">04</span><div class="card-content"><div class="card-title">Täckt, taklucka</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">05</span><div class="card-content"><div class="card-title">Kombi, taklucka</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">06</span><div class="card-content"><div class="card-title">Täckt, taxi</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">07</span><div class="card-content"><div class="card-title">Kombi, taxi</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">08</span><div class="card-content"><div class="card-title">Bostadsinredning</div><div class="card-desc">Permanent bostadsinredning (husbil).</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">96</span><div class="card-content"><div class="card-title">Polisbil</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">98</span><div class="card-content"><div class="card-title">Övrigt</div></div></div>
+      </div>
+    </section>
+
+    <!-- BUSS -->
+    <section class="section" id="buss">
+      <div class="section-header">
+        <div class="section-icon icon-green">🚌</div>
+        <div>
+          <h2>Buss <span style="font-weight:300;color:var(--text-muted)">– Kategori M2 & M3</span></h2>
+          <p>Utformning enligt (EU) 2018/858, Del C bilaga 1 & FN-föreskriften nr 107</p>
+        </div>
+      </div>
+      <div class="cards">
+        <div class="card"><span class="code-badge badge-green">CA</span><div class="card-content"><div class="card-title">Envåningsfordon</div><div class="card-desc">Passagerarutrymmen på en enda nivå eller ej i två våningar.</div></div></div>
+        <div class="card"><span class="code-badge badge-green">CB</span><div class="card-content"><div class="card-title">Tvåvåningsfordon</div><div class="card-desc">Passagerarutrymme fördelat på två däck. Inget stående utrymme på övre däck.</div></div></div>
+        <div class="card"><span class="code-badge badge-green">CC</span><div class="card-content"><div class="card-title">Ledat envåningsfordon</div><div class="card-desc">Två+ stela delar, sammankopplade passagerarutrymmen. Permanent sammankoppling.</div></div></div>
+        <div class="card"><span class="code-badge badge-green">CD</span><div class="card-content"><div class="card-title">Ledat tvåvåningsfordon</div><div class="card-desc">Ledade delar med sammankopplade utrymmen på minst ett däck.</div></div></div>
+        <div class="card"><span class="code-badge badge-green">CE</span><div class="card-content"><div class="card-title">Envånings låggolvsfordon</div><div class="card-desc">Klass I, II eller A. Minst 35 % stående utrymme utan trappor med tillgång till dörr.</div></div></div>
+        <div class="card"><span class="code-badge badge-green">CF</span><div class="card-content"><div class="card-title">Tvåvånings låggolvsfordon</div><div class="card-desc">Som CE men med två våningar.</div></div></div>
+        <div class="card"><span class="code-badge badge-green">CG</span><div class="card-content"><div class="card-title">Ledat envånings låggolvsfordon</div><div class="card-desc">Kombination av CC och CE.</div></div></div>
+        <div class="card"><span class="code-badge badge-green">CH</span><div class="card-content"><div class="card-title">Ledat tvåvånings låggolvsfordon</div><div class="card-desc">Kombination av CD och CF.</div></div></div>
+        <div class="card"><span class="code-badge badge-green">CI</span><div class="card-content"><div class="card-title">Envåningsfordon med öppet tak</div><div class="card-desc">Delvis öppet tak eller utan tak.</div></div></div>
+        <div class="card"><span class="code-badge badge-green">CJ</span><div class="card-content"><div class="card-title">Tvåvåningsfordon med öppet tak</div><div class="card-desc">Övre våningen har helt eller delvis öppet tak.</div></div></div>
+      </div>
+      <div class="legacy-header">Äldre nationella koder – används ej vid nyregistrering</div>
+      <div class="cards-legacy">
+        <div class="legacy-tag"><span class="code-badge badge-gray">CK</span><div class="card-content"><div class="card-title">Ledad envåningsbuss</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">CL</span><div class="card-content"><div class="card-title">Ledad tvåvåningsbuss</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">CM–CW</span><div class="card-content"><div class="card-title">Diverse busstyper</div><div class="card-desc">Enligt direktiv 2001/85/EG (låggolvsbussar, ledade varianter m.fl.)</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">01</span><div class="card-content"><div class="card-title">Täckt – ledbuss</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">03</span><div class="card-content"><div class="card-title">Täckt, flak</div><div class="card-desc">Bakre delen utformad som flak.</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">04</span><div class="card-content"><div class="card-title">Täckt, skåp</div><div class="card-desc">Avskilt godsutrymme bakom passagerarutrymmet.</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">98</span><div class="card-content"><div class="card-title">Övrigt</div></div></div>
+      </div>
+    </section>
+
+    <!-- LASTBIL -->
+    <section class="section" id="lastbil">
+      <div class="section-header">
+        <div class="section-icon icon-yellow">🚛</div>
+        <div>
+          <h2>Lastbil <span style="font-weight:300;color:var(--text-muted)">– Kategori N</span></h2>
+          <p>Utformning enligt förordning (EU) 2018/858, Del C bilaga 1</p>
+        </div>
+      </div>
+      <div class="cards">
+        <div class="card"><span class="code-badge badge-yellow">BA</span><div class="card-content"><div class="card-title">Lastbil</div><div class="card-desc">Konstruerad huvudsakligen för godstransport. Får dra släpfordon.</div></div></div>
+        <div class="card"><span class="code-badge badge-yellow">BB</span><div class="card-content"><div class="card-title">Skåpbil</div><div class="card-desc">Förarutrymme och lastutrymme inom samma enhet.</div></div></div>
+        <div class="card"><span class="code-badge badge-yellow">BC</span><div class="card-content"><div class="card-title">Dragfordon för påhängsvagn</div><div class="card-desc">Konstruerat uteslutande eller huvudsakligen för dragning av påhängsvagnar.</div></div></div>
+        <div class="card"><span class="code-badge badge-yellow">BD</span><div class="card-content"><div class="card-title">Dragfordon för släpvagn</div><div class="card-desc">Dragning av släpvagnar som inte är påhängsvagnar.</div></div></div>
+        <div class="card"><span class="code-badge badge-yellow">BE</span><div class="card-content"><div class="card-title">Pick-up</div><div class="card-desc">Högsta vikt ≤ 3 500 kg. Sittplatser och lastutrymme i skilda avdelningar.</div></div></div>
+      </div>
+      <div class="legacy-header">Äldre nationella koder – används ej vid nyregistrering</div>
+      <div class="cards-legacy">
+        <div class="legacy-tag"><span class="code-badge badge-gray">09</span><div class="card-content"><div class="card-title">Flak</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">10–13</span><div class="card-content"><div class="card-title">Flak-varianter</div><div class="card-desc">Lämmar, gallerlämmar, bommar, stolpar</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">14</span><div class="card-content"><div class="card-title">Flak – fasta sidor</div><div class="card-desc">Inkl. dumperflak med jämnhöga sidor.</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">15</span><div class="card-content"><div class="card-title">Flak – godslåda</div><div class="card-desc">Fyra sidor, bak- och framsida fällbara. Max 3 500 kg.</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">16–19</span><div class="card-content"><div class="card-title">Flak – övriga</div><div class="card-desc">Långgods, lämmar+kapell, godslåda+kapell, övrigt</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">20</span><div class="card-content"><div class="card-title">Skåp</div><div class="card-desc">Fasta sidor och tak, utan speciell inredning.</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">21–29</span><div class="card-content"><div class="card-title">Skåp-varianter</div><div class="card-desc">Hyllor, bostad, butik, kontor, sjukvård, verkstad, kyl, frys, övrigt</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">30</span><div class="card-content"><div class="card-title">Skåp, separat karosserienhet</div><div class="card-desc">Totalvikt ≤ 3 500 kg, hytt separat från skåp.</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">31</span><div class="card-content"><div class="card-title">Täckt lastutrymme m. gardinsidor</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">32</span><div class="card-content"><div class="card-title">Flak/godslåda m. öppningsbar överdel</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">40–49</span><div class="card-content"><div class="card-title">Tank-varianter</div><div class="card-desc">Brandfarlig vätska kl.1/2B-3, mjölk, vatten, asfalt, kemiska vätskor, gas, slam, övrigt</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">51–58</span><div class="card-content"><div class="card-title">Rullflak- & växelflakssystem</div><div class="card-desc">Krokarm, löpvagn, containerlås, centrallås, snabblås m.fl.</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">60–98</span><div class="card-content"><div class="card-title">Specialkarosserier</div><div class="card-desc">Betongbehållare, lastbalja, liftdumper, containerunderrede, djurtransport, bärgning, husvagn, chassi m.fl.</div></div></div>
+      </div>
+    </section>
+
+    <!-- SLÄPFORDON -->
+    <section class="section" id="slapfordon">
+      <div class="section-header">
+        <div class="section-icon icon-orange">🔗</div>
+        <div>
+          <h2>Släpfordon <span style="font-weight:300;color:var(--text-muted)">– Kategori O</span></h2>
+          <p>Utformning enligt förordning (EU) 2018/858, Del C bilaga 1</p>
+        </div>
+      </div>
+      <div class="cards">
+        <div class="card"><span class="code-badge badge-orange">DA</span><div class="card-content"><div class="card-title">Påhängsvagn</div><div class="card-desc">Koppling via axeltapp och vändskiva. Utövar avsevärd vertikal belastning på dragfordonet.</div></div></div>
+        <div class="card"><span class="code-badge badge-orange">DB</span><div class="card-content"><div class="card-title">Släpvagn med dragstång</div><div class="card-desc">Minst 2 axlar varav en styraxel. Statisk vertikal belastning &lt; 100 daN.</div></div></div>
+        <div class="card"><span class="code-badge badge-orange">DC</span><div class="card-content"><div class="card-title">Släpkärra</div><div class="card-desc">Axlar nära tyngdpunkten. Belastning på dragfordon ≤ 10% av högsta vikt eller 1 000 daN.</div></div></div>
+        <div class="card"><span class="code-badge badge-orange">DE</span><div class="card-content"><div class="card-title">Släpvagn med fast dragstång</div><div class="card-desc">En axel/axelgrupp. Statisk belastning ≤ 4 000 daN. Ej axeltapp/vändskiva.</div></div></div>
+        <div class="card"><span class="code-badge badge-orange">DF</span><div class="card-content"><div class="card-title">Link-påhängsvagn</div><div class="card-desc">Påhängsvagn med femte hjul baktill för att dra ytterligare påhängsvagn.</div></div></div>
+        <div class="card"><span class="code-badge badge-orange">DG</span><div class="card-content"><div class="card-title">Link-släpvagn med dragstång</div><div class="card-desc">Dragstångsvagn med femte hjul baktill för ytterligare påhängsvagn.</div></div></div>
+      </div>
+      <div class="legacy-header">Äldre nationella koder – används ej vid nyregistrering</div>
+      <div class="cards-legacy">
+        <div class="legacy-tag"><span class="code-badge badge-gray">09–19</span><div class="card-content"><div class="card-title">Flak-varianter</div><div class="card-desc">Flak, lämmar, gallerlämmar, bommar, stolpar, fasta sidor, godslåda, långgods m.fl.</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">20–32</span><div class="card-content"><div class="card-title">Skåp-varianter & gardinsidor</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">40–49</span><div class="card-content"><div class="card-title">Tank-varianter</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">51–98</span><div class="card-content"><div class="card-title">Specialkarosserier</div><div class="card-desc">Växelflak, lastbalja, fordon, djur, avfall, husvagn, chassi m.fl.</div></div></div>
+      </div>
+    </section>
+
+    <!-- MOTORCYKEL -->
+    <section class="section" id="motorcykel">
+      <div class="section-header">
+        <div class="section-icon icon-red">🏍️</div>
+        <div>
+          <h2>Motorcykel <span style="font-weight:300;color:var(--text-muted)">– Kategori L</span></h2>
+        </div>
+      </div>
+      <div class="cards">
+        <div class="card"><span class="code-badge badge-red">01</span><div class="card-content"><div class="card-title">MC</div><div class="card-desc">Tvåhjulig motorcykel utan sidvagn.</div></div></div>
+        <div class="card"><span class="code-badge badge-red">02</span><div class="card-content"><div class="card-title">MC – sidvagn</div><div class="card-desc">Tvåhjulig motorcykel med sidvagn.</div></div></div>
+        <div class="card"><span class="code-badge badge-red">98</span><div class="card-content"><div class="card-title">Övrigt</div><div class="card-desc">Trehjulig motorcykel, lastmotorcykel m.fl.</div></div></div>
+      </div>
+      <div class="legacy-header">Äldre nationella koder – används ej vid nyregistrering</div>
+      <div class="cards-legacy">
+        <div class="legacy-tag"><span class="code-badge badge-gray">03</span><div class="card-content"><div class="card-title">Moped klass I</div></div></div>
+      </div>
+    </section>
+
+    <!-- TERRÄNGVAGNAR -->
+    <section class="section" id="terrang">
+      <div class="section-header">
+        <div class="section-icon icon-teal">🌲</div>
+        <div>
+          <h2>Terrängvagnar och terrängsläp</h2>
+        </div>
+      </div>
+      <div class="cards">
+        <div class="card"><span class="code-badge badge-teal">01</span><div class="card-content"><div class="card-title">Täckt</div><div class="card-desc">Slutet karosseri för personbefordran.</div></div></div>
+        <div class="card"><span class="code-badge badge-teal">02</span><div class="card-content"><div class="card-title">Öppet</div><div class="card-desc">Öppet karosseri för personbefordran.</div></div></div>
+        <div class="card"><span class="code-badge badge-teal">11</span><div class="card-content"><div class="card-title">Dumper</div></div></div>
+        <div class="card"><span class="code-badge badge-teal">12</span><div class="card-content"><div class="card-title">Skotare</div></div></div>
+        <div class="card"><span class="code-badge badge-teal">13</span><div class="card-content"><div class="card-title">Motorschaktvagn</div></div></div>
+        <div class="card"><span class="code-badge badge-teal">19</span><div class="card-content"><div class="card-title">Flak</div><div class="card-desc">Samtliga typer av öppna flak (inkl. godslåda).</div></div></div>
+        <div class="card"><span class="code-badge badge-teal">29</span><div class="card-content"><div class="card-title">Skåp</div><div class="card-desc">Lastutrymme med fasta sidor och tak. Speciell inredning anges.</div></div></div>
+        <div class="card"><span class="code-badge badge-teal">49</span><div class="card-content"><div class="card-title">Tank</div><div class="card-desc">Cistern för vätska eller gas. Brandfarlig vätska anges.</div></div></div>
+        <div class="card"><span class="code-badge badge-teal">61</span><div class="card-content"><div class="card-title">Banke</div><div class="card-desc">Karosseriet utgörs av en eller flera bankar.</div></div></div>
+        <div class="card"><span class="code-badge badge-teal">98</span><div class="card-content"><div class="card-title">Övrigt</div></div></div>
+      </div>
+    </section>
+
+    <!-- TRAKTOR -->
+    <section class="section" id="traktor">
+      <div class="section-header">
+        <div class="section-icon icon-purple">🚜</div>
+        <div>
+          <h2>Traktor och motorredskap <span style="font-weight:300;color:var(--text-muted)">– Kategori T & C</span></h2>
+        </div>
+      </div>
+      <div class="cards">
+        <div class="card"><span class="code-badge badge-purple">01</span><div class="card-content"><div class="card-title">Traktor</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">07</span><div class="card-content"><div class="card-title">Ombyggd bil</div><div class="card-desc">Till traktor/motorredskap ombyggd bil. Karosseri specificeras via textkod T17C.</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">11</span><div class="card-content"><div class="card-title">Lunnare</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">12</span><div class="card-content"><div class="card-title">Fällare</div><div class="card-desc">Inkl. fällare-läggare och fällare-lunnare.</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">13</span><div class="card-content"><div class="card-title">Processor</div><div class="card-desc">Skogsavverkningsmaskin.</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">14</span><div class="card-content"><div class="card-title">Skördare</div><div class="card-desc">Skogsavverkningsmaskin.</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">15</span><div class="card-content"><div class="card-title">Markberedare</div><div class="card-desc">Skogsbruksmaskin.</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">21</span><div class="card-content"><div class="card-title">Hjullastare</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">22</span><div class="card-content"><div class="card-title">Grävlastare</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">23</span><div class="card-content"><div class="card-title">Hjulschaktare</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">24</span><div class="card-content"><div class="card-title">Hjulgrävmaskin</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">31</span><div class="card-content"><div class="card-title">Motviktstruck</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">32</span><div class="card-content"><div class="card-title">Grensletruck</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">33</span><div class="card-content"><div class="card-title">Sidlastare</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">35</span><div class="card-content"><div class="card-title">Lyfttruck, övrig</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">40</span><div class="card-content"><div class="card-title">Minidumper</div><div class="card-desc">Motorredskap för kortare förflyttning av gods.</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">45</span><div class="card-content"><div class="card-title">Mobilplattform</div><div class="card-desc">Lyft med vikarm, teleskoparm, vertikal mast eller saxarmar.</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">50</span><div class="card-content"><div class="card-title">Väghyvel</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">51</span><div class="card-content"><div class="card-title">Snöslunga</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">52</span><div class="card-content"><div class="card-title">Sopmaskin</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">53</span><div class="card-content"><div class="card-title">Betongpump</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">60</span><div class="card-content"><div class="card-title">Skördemaskin</div><div class="card-desc">Jordbruksmaskin för skörd av säd, rotfrukter, frukter m.m.</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">90</span><div class="card-content"><div class="card-title">Mobilkran – motorredskap klass I</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">94</span><div class="card-content"><div class="card-title">Terminaltraktor</div><div class="card-desc">För på- och avlastning av påhängsvagnar inom hamn- och terminalområden.</div></div></div>
+        <div class="card"><span class="code-badge badge-purple">98</span><div class="card-content"><div class="card-title">Övrigt</div></div></div>
+      </div>
+      <div class="legacy-header">Äldre nationella koder – används ej vid nyregistrering</div>
+      <div class="cards-legacy">
+        <div class="legacy-tag"><span class="code-badge badge-gray">04</span><div class="card-content"><div class="card-title">Enaxlig traktor</div><div class="card-desc">Får ej framföras på väg utan tillkopplat släpfordon.</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">08</span><div class="card-content"><div class="card-title">Motorredskap</div><div class="card-desc">Används inte efter 1 januari 1993.</div></div></div>
+      </div>
+    </section>
+
+    <!-- FORDON FÖR SÄRSKILDA ÄNDAMÅL -->
+    <section class="section" id="sarskilda">
+      <div class="section-header">
+        <div class="section-icon icon-pink">🚑</div>
+        <div>
+          <h2>Fordon för särskilda ändamål <span style="font-weight:300;color:var(--text-muted)">– Kategori M, N & O</span></h2>
+          <p>Utformning enligt förordning (EU) 2018/858, Del A bilaga 1</p>
+        </div>
+      </div>
+      <div class="cards">
+        <div class="card"><span class="code-badge badge-pink">SA</span><div class="card-content"><div class="card-title">Campingbil</div><div class="card-desc">Kategori M. Sittplatser, sovplatser, matlagning och förvaring. All utrustning fastsatt i boendeutrymme.</div></div></div>
+        <div class="card"><span class="code-badge badge-pink">SB</span><div class="card-content"><div class="card-title">Bepansrat fordon</div><div class="card-desc">Skydd av personer/varor ombord. Skottsäker pansarplåt.</div></div></div>
+        <div class="card"><span class="code-badge badge-pink">SC</span><div class="card-content"><div class="card-title">Ambulans</div><div class="card-desc">Kategori M. Transport av sjuka/skadade med särskild utrustning.</div></div></div>
+        <div class="card"><span class="code-badge badge-pink">SD</span><div class="card-content"><div class="card-title">Likbil</div><div class="card-desc">Kategori M. Transport av avlidna med särskild utrustning.</div></div></div>
+        <div class="card"><span class="code-badge badge-pink">SE</span><div class="card-content"><div class="card-title">Husvagn</div><div class="card-desc">Släpvagn avsedd för mobilt boende.</div></div></div>
+        <div class="card"><span class="code-badge badge-pink">SF</span><div class="card-content"><div class="card-title">Mobilkran</div><div class="card-desc">Specialfordon kategori N3. Ej godstransport. Lyftmoment ≥ 400 kNm.</div></div></div>
+        <div class="card"><span class="code-badge badge-pink">SG</span><div class="card-content"><div class="card-title">Annat fordon för särskilt ändamål</div><div class="card-desc">Fordon som inte faller under övriga SA–SF definitioner.</div></div></div>
+        <div class="card"><span class="code-badge badge-pink">SH</span><div class="card-content"><div class="card-title">Rullstolsanpassat fordon</div><div class="card-desc">Kategori M1. Tillverkat/konverterat för rullstolsburna passagerare.</div></div></div>
+        <div class="card"><span class="code-badge badge-pink">SJ</span><div class="card-content"><div class="card-title">Dollyaxel</div><div class="card-desc">Kategori O med vändskiva som konverterar påhängsvagn till släpfordon.</div></div></div>
+        <div class="card"><span class="code-badge badge-pink">SK</span><div class="card-content"><div class="card-title">Släpvagn för exceptionell last</div><div class="card-desc">Kategori O4. Odelbara laster med mått-/hastighetsbegränsningar. Inkl. hydrauliska modulära släpvagnar.</div></div></div>
+        <div class="card"><span class="code-badge badge-pink">SL</span><div class="card-content"><div class="card-title">Motorfordon för exceptionell last</div><div class="card-desc">Kategori N3. Fler än 2 axlar, minst hälften drivaxlar, motoreffekt ≥ 350 kW.</div></div></div>
+        <div class="card"><span class="code-badge badge-pink">SM</span><div class="card-content"><div class="card-title">Redskapsbärare</div><div class="card-desc">Terränggående kategori N. Minst 2 monteringsområden för utbytbar utrustning. ISO 3833-1977.</div></div></div>
+      </div>
+
+      <div style="margin-top:20px; margin-bottom:10px; font-size:13px; font-weight:600; color:var(--text-muted);">Koder gemensamma för fler fordonsslag</div>
+      <div class="cards">
+        <div class="card"><span class="code-badge badge-gray">06</span><div class="card-content"><div class="card-title">Taxi</div><div class="card-desc">Uppenbarligen avsedd för taxitrafik (yrkestrafiklagen 1998:490).</div></div></div>
+        <div class="card"><span class="code-badge badge-gray">75</span><div class="card-content"><div class="card-title">Brandfordon</div><div class="card-desc">Inrättat för statlig brandkår/kommunal räddningstjänst. Godkänd larmanordning.</div></div></div>
+        <div class="card"><span class="code-badge badge-gray">85</span><div class="card-content"><div class="card-title">Dolly</div><div class="card-desc">Styraxel för påhängsvagn. Utrustad med vändskiva.</div></div></div>
+        <div class="card"><span class="code-badge badge-gray">88</span><div class="card-content"><div class="card-title">Tull</div><div class="card-desc">Brukas uteslutande av Tullverket. Godkänd larmanordning.</div></div></div>
+        <div class="card"><span class="code-badge badge-gray">89</span><div class="card-content"><div class="card-title">Kustbevakning</div><div class="card-desc">Brukas uteslutande av Kustbevakningen. Godkänd larmanordning.</div></div></div>
+        <div class="card"><span class="code-badge badge-gray">91</span><div class="card-content"><div class="card-title">Bärgningsfordon</div><div class="card-desc">Kategori N. Fast upphängningsanordning ≥ 500 kg lyftkapacitet. Framaxelbelastning ≥ 15% av bruttovikt.</div></div></div>
+        <div class="card"><span class="code-badge badge-gray">93</span><div class="card-content"><div class="card-title">Polis</div><div class="card-desc">Brukas uteslutande av polismyndighet. Godkänd larmanordning.</div></div></div>
+      </div>
+
+      <div class="legacy-header">Äldre nationella koder – används ej vid nyregistrering</div>
+      <div class="cards-legacy">
+        <div class="legacy-tag"><span class="code-badge badge-gray">95</span><div class="card-content"><div class="card-title">Brandfordon övrigt</div><div class="card-desc">Där kod 75 inte är tillämpbar. Karosseri specificeras via T17C.</div></div></div>
+        <div class="legacy-tag"><span class="code-badge badge-gray">99</span><div class="card-content"><div class="card-title">Ambulans (äldre)</div><div class="card-desc">Inrättat uteslutande för transport av sjuka/skadade. Godkänd larmanordning.</div></div></div>
+      </div>
+    </section>
+
+    <!-- TILLÄGGSKODER -->
+    <section class="section" id="tillagg">
+      <div class="section-header">
+        <div class="section-icon icon-yellow">➕</div>
+        <div>
+          <h2>Tilläggskoder</h2>
+          <p>Används som komplement till karosserikoder BA och DA–DE där det är nödvändigt</p>
+        </div>
+      </div>
+      <div class="add-codes">
+        <div class="add-card"><span class="add-num">01</span><span class="add-text">Öppet flak</span></div>
+        <div class="add-card"><span class="add-num">02</span><span class="add-text">Flaklämmar</span></div>
+        <div class="add-card"><span class="add-num">03</span><span class="add-text">Skåp</span></div>
+        <div class="add-card"><span class="add-num">04</span><span class="add-text">Konditionerad kaross med isolering och utrustning</span></div>
+        <div class="add-card"><span class="add-num">05</span><span class="add-text">Konditionerad kaross med isolering, utan utrustning</span></div>
+        <div class="add-card"><span class="add-num">06</span><span class="add-text">Med gardinsida</span></div>
+        <div class="add-card"><span class="add-num">07</span><span class="add-text">Växelflak (utbytbar karosseristomme)</span></div>
+        <div class="add-card"><span class="add-num">08</span><span class="add-text">Containerfordon</span></div>
+        <div class="add-card"><span class="add-num">09</span><span class="add-text">Fordon försett med lyftkrok</span></div>
+        <div class="add-card"><span class="add-num">10</span><span class="add-text">Tippfordon</span></div>
+        <div class="add-card"><span class="add-num">11</span><span class="add-text">Tankfordon</span></div>
+        <div class="add-card"><span class="add-num">12</span><span class="add-text">Tankfordon för farligt gods</span></div>
+        <div class="add-card"><span class="add-num">13</span><span class="add-text">Transport av levande djur</span></div>
+        <div class="add-card"><span class="add-num">14</span><span class="add-text">Transport av fordon</span></div>
+        <div class="add-card"><span class="add-num">15</span><span class="add-text">Betongblandare</span></div>
+        <div class="add-card"><span class="add-num">16</span><span class="add-text">Fordon med betongpump</span></div>
+        <div class="add-card"><span class="add-num">17</span><span class="add-text">Timmerfordon</span></div>
+        <div class="add-card"><span class="add-num">18</span><span class="add-text">Transport av avfall</span></div>
+        <div class="add-card"><span class="add-num">19</span><span class="add-text">Gatusopning, gaturengöring, avloppsrening</span></div>
+        <div class="add-card"><span class="add-num">20</span><span class="add-text">Kompressorfordon</span></div>
+        <div class="add-card"><span class="add-num">21</span><span class="add-text">Transport av båtar</span></div>
+        <div class="add-card"><span class="add-num">22</span><span class="add-text">Transport av glidflygare</span></div>
+        <div class="add-card"><span class="add-num">23</span><span class="add-text">Detaljhandel eller förevisning</span></div>
+        <div class="add-card"><span class="add-num">24</span><span class="add-text">Bärgningsfordon</span></div>
+        <div class="add-card"><span class="add-num">25</span><span class="add-text">Maskinstege (stegbil)</span></div>
+        <div class="add-card"><span class="add-num">26</span><span class="add-text">Kranbil</span></div>
+        <div class="add-card"><span class="add-num">27</span><span class="add-text">Fordon med lyftplattform</span></div>
+        <div class="add-card"><span class="add-num">28</span><span class="add-text">Väghållningsfordon</span></div>
+        <div class="add-card"><span class="add-num">29</span><span class="add-text">Låggolvssläpvagn</span></div>
+        <div class="add-card"><span class="add-num">30</span><span class="add-text">Transport av glas</span></div>
+        <div class="add-card"><span class="add-num">31</span><span class="add-text">Brandbil</span></div>
+        <div class="add-card"><span class="add-num">32</span><span class="add-text">Flaklämmar och presenning</span></div>
+        <div class="add-card"><span class="add-num">99</span><span class="add-text">Karosseri som inte ingår i förteckningen</span></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+</body>
+</html>
