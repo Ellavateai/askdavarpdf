@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Bromskontroll fleraxeldrivna bilar — Viking Kontroll</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#F2F2F7;--card:#FFFFFF;--ink:#1C1C1E;--ink2:#48484A;--ink3:#8E8E93;--sep:#E5E5EA;
+  --amber:#FF9F0A;--viking-red:#E8001C;
+  --r:#FF3B30;--r-bg:#FFF1F0;--r-bd:#FFCCC7;--r-tx:#AE1A11;
+  --b:#007AFF;--b-bg:#F0F5FF;--b-bd:#BAD4FF;--b-tx:#004DB3;
+  --g:#6C6C70;--g-bg:#F5F5F7;--g-bd:#D1D1D6;--g-tx:#3A3A3C;
+  --y:#FF9F0A;--y-bg:#FFF8EC;--y-bd:#FFD580;--y-tx:#7D4800;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100dvh}
+
+/* TOPBAR */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(242,242,247,.94);
+  backdrop-filter:saturate(180%) blur(20px);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid var(--sep);
+  padding:10px 16px 8px;
+}
+.topbar-r1{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.logo img{height:28px;width:auto;display:block}
+.search{
+  flex:1;display:flex;align-items:center;gap:8px;
+  background:var(--card);border:1.5px solid var(--sep);border-radius:12px;padding:9px 12px;
+  transition:border-color .15s,box-shadow .15s;
+}
+.search:focus-within{border-color:var(--amber);box-shadow:0 0 0 3px rgba(255,159,10,.15)}
+.search svg{color:var(--ink3);flex-shrink:0}
+.search input{flex:1;border:none;outline:none;background:none;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--ink);min-width:0}
+.search input::placeholder{color:var(--ink3)}
+.sclear{font-size:13px;color:var(--ink3);cursor:pointer;padding:2px 4px;opacity:0;transition:opacity .15s}
+.sclear.on{opacity:1}
+.filters{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;-ms-overflow-style:none;scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.fb{
+  display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;white-space:nowrap;
+  cursor:pointer;flex-shrink:0;background:var(--card);color:var(--ink2);
+  border:1.5px solid var(--sep);transition:all .12s;
+}
+.fb.on{border-color:transparent}
+.fb[data-f="all"].on{background:var(--ink);color:#fff}
+.fb[data-f="ej"].on{background:var(--r-bg);color:var(--r-tx);border-color:var(--r-bd)}
+.fb[data-f="nl"].on{background:var(--b-bg);color:var(--b-tx);border-color:var(--b-bd)}
+.fb[data-f="av"].on{background:var(--g-bg);color:var(--g-tx);border-color:var(--g-bd)}
+.fb[data-f="2h"].on{background:var(--y-bg);color:var(--y-tx);border-color:var(--y-bd)}
+.fd{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.legend-strip{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+  padding:8px 0 2px;
+  border-top:1px solid var(--sep);
+  margin-top:8px;
+}
+.ls-item{
+  display:flex;align-items:flex-start;gap:8px;
+  background:var(--card);border-radius:10px;
+  padding:7px 10px;
+  border:1px solid var(--sep);
+}
+.ls-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.ls-text{font-size:12px;color:var(--ink2);line-height:1.4}
+.ls-text strong{display:block;font-weight:700;color:var(--ink);font-size:12.5px}
+@media(min-width:640px){
+  .legend-strip{grid-template-columns:repeat(4,1fr)}
+}
+
+/* MAIN */
+.main{padding:16px 16px 80px;max-width:820px;margin:0 auto}
+.count{font-size:12px;color:var(--ink3);margin-bottom:10px;padding:0 2px;min-height:18px}
+.nores{display:none;text-align:center;padding:64px 24px;color:var(--ink3)}
+.nores strong{display:block;font-size:18px;font-weight:600;color:var(--ink2);margin-bottom:6px}
+
+/* CARD */
+.card{background:var(--card);border-radius:16px;margin-bottom:10px;overflow:hidden;border:1px solid rgba(0,0,0,.06);box-shadow:0 1px 3px rgba(0,0,0,.05);scroll-margin-top:120px}
+.card.hidden{display:none}
+.card-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;user-select:none;gap:12px;-webkit-user-select:none}
+.card-hd:active{background:var(--bg)}
+.hd-l{min-width:0}
+.brand{font-size:16px;font-weight:700;color:var(--ink);letter-spacing:-.2px}
+.brand-sub{font-size:12px;color:var(--ink3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hd-r{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.tp-row{display:flex;gap:4px}
+.tp{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.tp-r{background:var(--r)}.tp-b{background:var(--b)}.tp-g{background:#9CA3AF}.tp-y{background:var(--y)}
+.chevron{color:var(--ink3);flex-shrink:0;transition:transform .2s}
+.card.open .chevron{transform:rotate(180deg)}
+.card-bd{display:none;border-top:1px solid var(--sep)}
+.card.open .card-bd{display:block}
+
+/* ROW */
+.row{padding:14px 16px;border-bottom:1px solid var(--sep)}
+.row:last-child{border-bottom:none}
+.row.hidden{display:none}
+.row-hdr{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:7px}
+.row-model{font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.35;min-width:0}
+.row-model small{display:block;font-size:11.5px;font-weight:400;color:var(--ink3);margin-top:2px}
+.row-year{font-family:'DM Mono',monospace;font-size:11px;color:var(--ink3);white-space:nowrap;flex-shrink:0;background:var(--bg);border-radius:5px;padding:2px 7px}
+.row-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:7px}
+.tag{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid transparent;white-space:nowrap}
+.td{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.t-r{background:var(--r-bg);color:var(--r-tx);border-color:var(--r-bd)}.t-r .td{background:var(--r)}
+.t-b{background:var(--b-bg);color:var(--b-tx);border-color:var(--b-bd)}.t-b .td{background:var(--b)}
+.t-g{background:var(--g-bg);color:var(--g-tx);border-color:var(--g-bd)}.t-g .td{background:#9CA3AF}
+.t-y{background:var(--y-bg);color:var(--y-tx);border-color:var(--y-bd)}.t-y .td{background:var(--y)}
+.row-inst{font-size:13px;color:var(--ink2);line-height:1.65}
+.row-inst strong{font-weight:600;color:var(--ink)}
+
+/* OBS */
+.obs{margin-top:8px;padding:10px 12px;background:var(--y-bg);border-left:3px solid var(--amber);border-radius:0 10px 10px 0;font-size:12.5px;color:var(--y-tx);line-height:1.55}
+.obs strong{font-weight:700;color:#7D4800}
+
+/* STEPS */
+ol.steps{margin-top:10px;list-style:none;counter-reset:s}
+ol.steps li{counter-increment:s;display:flex;gap:10px;align-items:flex-start;padding:7px 0;font-size:13px;color:var(--ink2);border-bottom:1px solid var(--sep);line-height:1.5}
+ol.steps li:last-child{border-bottom:none;padding-bottom:0}
+ol.steps li::before{content:counter(s);flex-shrink:0;width:20px;height:20px;background:var(--ink);color:#fff;border-radius:50%;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;margin-top:1px}
+
+/* LEGEND */
+.legend{margin-top:16px;padding:14px 16px;background:var(--card);border-radius:16px;border:1px solid rgba(0,0,0,.06);display:flex;flex-direction:column;gap:10px}
+.leg-lbl{font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;width:100%;margin-bottom:4px}
+.leg-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--ink2);font-weight:500;width:100%}
+.leg-item--full{width:100%}
+.leg-item div{display:flex;flex-direction:column;gap:1px}
+.leg-item strong{font-size:13px;font-weight:700;color:var(--ink)}
+.leg-desc{font-size:12px;color:var(--ink3);font-weight:400}
+.leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px}
+
+@media(min-width:640px){
+  .topbar{padding:12px 24px 10px}
+  .topbar-r1{margin-bottom:10px}
+  .main{padding:20px 24px 80px}
+  .card-hd{padding:16px 20px}
+  .row{padding:14px 20px}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-r1">
+    <div class="logo"><img src="data:image/png;base64,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" alt="Viking Kontroll"></div>
+    <div class="search">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input id="si" type="search" placeholder="Sök märke…" autocomplete="off" autocorrect="off" spellcheck="false">
+      <span class="sclear" id="sx">✕</span>
+    </div>
+  </div>
+  <div class="filters">
+    <button class="fb on" data-f="all">Alla märken</button>
+    <button class="fb" data-f="ej"><span class="fd" style="background:var(--r)"></span>Koppla ur 4WD/diff</button>
+    <button class="fb" data-f="nl"><span class="fd" style="background:var(--b)"></span>Neutral / Friläge</button>
+    <button class="fb" data-f="av"><span class="fd" style="background:#9CA3AF"></span>Stäng av tändning</button>
+    <button class="fb" data-f="2h"><span class="fd" style="background:var(--y)"></span>Växla till 2H/2WD</button>
+  </div>
+  <div class="legend-strip">
+    <div class="ls-item">
+      <span class="ls-dot" style="background:var(--r)"></span>
+      <span class="ls-text"><strong>Koppla ur 4WD / diff</strong>Fyrhjulsdrift &amp; diff-spärr måste vara urkopplad</span>
+    </div>
+    <div class="ls-item">
+      <span class="ls-dot" style="background:var(--b)"></span>
+      <span class="ls-text"><strong>Neutral / Friläge</strong>Auto: N-läge · Manuell: friläge</span>
+    </div>
+    <div class="ls-item">
+      <span class="ls-dot" style="background:#9CA3AF"></span>
+      <span class="ls-text"><strong>Stäng av tändningen</strong>Motor av vid provning</span>
+    </div>
+    <div class="ls-item">
+      <span class="ls-dot" style="background:var(--y)"></span>
+      <span class="ls-text"><strong>Växla till 2H / 2WD</strong>Manöverspak/reglage i tvåhjulsdrift</span>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+<div class="count" id="countRow"></div>
+<div class="nores" id="noRes"><strong>Inga resultat</strong>Prova ett annat märke.</div>
+
+<!-- ALFA ROMEO -->
+<div class="card" id="alfa-romeo" data-brand="alfa romeo">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Alfa Romeo</div><div class="brand-sub">Alfa 33 4x4 · Giardinetta IE 4x4 SW</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Alfa 33 4x4<small>Alfa 33 Giardinetta IE 4x4 SW</small></div><div class="row-year">1984–1991</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Ej inkopplad</span></div>
+      <div class="row-inst">Fyrhjulsdriften <strong>ej inkopplad</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ARO -->
+<div class="card" id="aro" data-brand="aro">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">ARO</div><div class="brand-sub">Alla modeller</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Alla modeller</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Ej inkopplad</span></div>
+      <div class="row-inst">Fyrhjulsdriften <strong>ej inkopplad</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- AUDI -->
+<div class="card" id="audi" data-brand="audi">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Audi</div><div class="brand-sub">Quattro · A3/S3/TT · A4–A8/S/RS</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-b"></span><span class="tp tp-g"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="b">
+      <div class="row-hdr"><div class="row-model">80 Quattro · 90 Quattro · 100 Quattro · 200 Quattro<small>Coupé Quattro · Quattro · V8 · S2, RS2</small></div><div class="row-year">1982–1994</div></div>
+      <div class="row-tags"><span class="tag t-b"><span class="td"></span>Neutral / Friläge</span></div>
+      <div class="row-inst">Differentialspärrar ej inkopplade. Auto: <strong>N-läge</strong> · Manuell: <strong>friläge</strong>.</div>
+    </div>
+    <div class="row" data-tags="b">
+      <div class="row-hdr"><div class="row-model">A4 · S4 · RS4<small>A6 · S6 · RS6 · A8 · S8</small></div><div class="row-year">–2015</div></div>
+      <div class="row-tags"><span class="tag t-b"><span class="td"></span>Neutral / Friläge</span></div>
+      <div class="row-inst">Differentialspärr <strong>ej inkopplad</strong>. Auto: <strong>N-läge</strong> · Manuell: <strong>friläge</strong>.</div>
+    </div>
+    <div class="row" data-tags="g b">
+      <div class="row-hdr"><div class="row-model">A4 · S4 · RS4<small>A6 · S6 · RS6 · A8 · S8</small></div><div class="row-year">2016–</div></div>
+      <div class="row-tags"><span class="tag t-g"><span class="td"></span>Tändning av</span><span class="tag t-b"><span class="td"></span>Friläge / Neutral</span></div>
+      <div class="row-inst">Tändningen <strong>avslagen</strong> vid bromskontroll. Växel i <strong>friläge/neutral</strong>.</div>
+    </div>
+    <div class="row" data-tags="g b">
+      <div class="row-hdr"><div class="row-model">A3 · S3 · TT</div><div class="row-year">Alla år</div></div>
+      <div class="row-tags"><span class="tag t-g"><span class="td"></span>Tändning av</span><span class="tag t-b"><span class="td"></span>Friläge / Neutral</span></div>
+      <div class="row-inst">Tändningen <strong>avslagen</strong> vid bromskontroll. Växel i <strong>friläge/neutral</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- BMW -->
+<div class="card" id="bmw" data-brand="bmw">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">BMW</div><div class="brand-sub">Samtliga med X-drive · PHEV</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-b"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="b">
+      <div class="row-hdr"><div class="row-model">Samtliga med X-drive / PHEV</div><div class="row-year">2001–</div></div>
+      <div class="row-tags"><span class="tag t-b"><span class="td"></span>Neutral / Friläge</span></div>
+      <div class="row-inst">Auto: <strong>N-läge</strong> · Manuell: <strong>friläge</strong>. Bilen identifierar automatiskt att den körts ned i rullbromsprovare och ställer in rullbromsprovsläge. Varningslampor kan tändas men slocknar automatiskt när bilen körs ur.
+        <div class="obs"><strong>OBS!</strong> Gaspådrag får inte ske med rullarna igång.<br>Nyare modeller (ex. X3 och X4) kan vara utrustade med HDC (Hill Descent Control). HDC ska inaktiveras innan bromsprov — kontrollampan för HDC ska <strong>inte lysa</strong>.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHEVROLET / GMC -->
+<div class="card" id="chevrolet" data-brand="chevrolet gmc">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Chevrolet / GMC</div><div class="brand-sub">Pick-up · Blazer · Suburban · Silverado · TrailBlazer · Tahoe</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-y"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">1500 Pick Up · 2500 Pick Up · 3500 Pick Up · Blazer · S 10 Pick Up<small>Suburban · Silverado · TrailBlazer · Tahoe</small></div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge 2H / 2WD</span></div>
+      <div class="row-inst">Manöverspak i läge för <strong>tvåhjulsdrift</strong> eller reglage på instrumentpanel i läge <strong>2</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- CITROËN -->
+<div class="card" id="citroen" data-brand="citroën citroen">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Citroën</div><div class="brand-sub">C-Crosser</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-y"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">C-Crosser</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge 2WD</span></div>
+      <div class="row-inst">Reglage (mellan framsäten) i läge <strong>2WD</strong>. Håll sedan knappen till vänster om ratten märkt <strong>ASC</strong> intryckt i minst <strong>3 sekunder</strong> — antisladd/antispinn kopplas ur och indikeringslampa tänds på instrumentpanelen.</div>
+    </div>
+  </div>
+</div>
+
+<!-- DACIA -->
+<div class="card" id="dacia" data-brand="dacia">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Dacia</div><div class="brand-sub">Duster</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-y"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">Duster</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge 2WD</span></div>
+      <div class="row-inst">Reglage i läge <strong>2WD</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- DAF -->
+<div class="card" id="daf" data-brand="daf">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">DAF</div><div class="brand-sub">Se tillverkarens instruktion</div></div>
+    <div class="hd-r"><div class="tp-row"></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="">
+      <div class="row-hdr"><div class="row-model">DAF</div><div class="row-year">–</div></div>
+      <div class="row-tags"></div>
+      <div class="row-inst">Finns i källdokumentet utan specificerade modeller eller instruktioner. Följ tillverkarens anvisningar.</div>
+    </div>
+  </div>
+</div>
+
+<!-- DAIHATSU -->
+<div class="card" id="daihatsu" data-brand="daihatsu">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Daihatsu</div><div class="brand-sub">Feroza · Rocky</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span><span class="tp tp-y"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Feroza</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Ej inkopplad</span></div>
+      <div class="row-inst">Fyrhjulsdriften <strong>ej inkopplad</strong>.</div>
+    </div>
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">Rocky</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge 2H</span></div>
+      <div class="row-inst">Manöverspak i läge <strong>2H</strong>. På vissa modeller: 4H-knapp i läge <strong>OFF</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- DODGE -->
+<div class="card" id="dodge" data-brand="dodge">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Dodge</div><div class="brand-sub">Alla modeller</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Alla modeller</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Ej inkopplad</span></div>
+      <div class="row-inst">Fyrhjulsdriften <strong>ej inkopplad</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FIAT -->
+<div class="card" id="fiat" data-brand="fiat">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Fiat</div><div class="brand-sub">Panda 4x4</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Panda 4x4</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Ej inkopplad</span></div>
+      <div class="row-inst">Fyrhjulsdriften <strong>ej inkopplad</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FORD -->
+<div class="card" id="ford" data-brand="ford">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Ford</div><div class="brand-sub">Bronco · Transit · Explorer · Galaxy · Ranger</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span><span class="tp tp-g"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Bronco · Transit · Ranger</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Ej inkopplad</span></div>
+      <div class="row-inst">Fyrhjulsdriften <strong>ej inkopplad</strong>.</div>
+    </div>
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Explorer</div><div class="row-year">–1996</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Ej inkopplad</span></div>
+      <div class="row-inst">Fyrhjulsdriften <strong>ej inkopplad</strong>.</div>
+    </div>
+    <div class="row" data-tags="av">
+      <div class="row-hdr"><div class="row-model">Galaxy</div><div class="row-year">2001–2014</div></div>
+      <div class="row-tags"><span class="tag t-g"><span class="td"></span>Tändning av</span></div>
+      <div class="row-inst">Tändningen <strong>avslagen</strong> vid bromskontroll.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FORD TRI-STAR -->
+<div class="card" id="ford-tristar" data-brand="ford tri-star tristar">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Ford Tri-Star</div><div class="brand-sub">TS Bronco · TSF 150–550 · TS Excursion · TS Expedition · TS Navigator</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span><span class="tp tp-y"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">TS Bronco</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Ej inkopplad</span></div>
+      <div class="row-inst">Fyrhjulsdriften <strong>ej inkopplad</strong>.</div>
+    </div>
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">TSE · TSF 150 · TSF 250–450</div><div class="row-year">–1996 / –1997</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge 2H</span></div>
+      <div class="row-inst">Manöverspak i läge <strong>2H</strong>.</div>
+    </div>
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">TS Excusion · TSF 150 · TSF 250–550</div><div class="row-year">1997– / 1998–</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge 2H / 2WD</span></div>
+      <div class="row-inst">Två olika system — manöverspak eller reglage på instrumentpanelen. Manöverspak i läge <strong>2H</strong> eller reglage i läge <strong>2WD</strong>.</div>
+    </div>
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">TS Expedition · TS Navigator</div><div class="row-year">1997–1998</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge 2WD</span></div>
+      <div class="row-inst">Reglage på instrumentpanelen i läge <strong>2WD</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FORD USA -->
+<div class="card" id="ford-usa" data-brand="ford usa econoline">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Ford USA</div><div class="brand-sub">E Econoline · F 150 · F 250–550 · Excursion · Expedition · Lincoln Navigator</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-y"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">E (Econline) · F 150 · F 250 – 450</div><div class="row-year">–1996 / –1997</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge 2H</span></div>
+      <div class="row-inst">Manöverspak i läge <strong>2H</strong>.</div>
+    </div>
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">Excursion · F 150 · F 250 – 550</div><div class="row-year">1997 / 1998–</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge 2H / 2WD</span></div>
+      <div class="row-inst">Två olika system — manöverspak eller reglage på instrumentpanelen. Manöverspak i läge <strong>2H</strong> eller reglage i läge <strong>2WD</strong>.</div>
+    </div>
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">Expedition · Lincoln Navigator</div><div class="row-year">1997–1998</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge 2WD</span></div>
+      <div class="row-inst">Reglage på instrumentpanelen i läge <strong>2WD</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- HONDA -->
+<div class="card" id="honda" data-brand="honda">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Honda</div><div class="brand-sub">Civic Shuttle</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Civic Shuttle</div><div class="row-year">1986–1987</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Ej inkopplad</span></div>
+      <div class="row-inst">4WD <strong>ej inkopplad</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ISUZU -->
+<div class="card" id="isuzu" data-brand="isuzu">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Isuzu</div><div class="brand-sub">Alla 4x4-modeller</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-y"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">Alla 4x4-modeller</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge 2H</span></div>
+      <div class="row-inst">Manöverspak i läge <strong>2H</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- IVECO -->
+<div class="card" id="iveco" data-brand="iveco">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Iveco</div><div class="brand-sub">40E 10W</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-y"></span><span class="tp tp-r"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="2h r">
+      <div class="row-hdr"><div class="row-model">40E 10W</div><div class="row-year">1988–1998</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge 2N</span><span class="tag t-r"><span class="td"></span>Diff ej inkopplad</span></div>
+      <div class="row-inst">Manöverspak i läge <strong>2N</strong> samt differentialspärr <strong>ej inkopplad</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- JEEP -->
+<div class="card" id="jeep" data-brand="jeep">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Jeep</div><div class="brand-sub">Alla modeller — villkorat</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Alla modeller</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Ej inkopplad</span></div>
+      <div class="row-inst">Får provas <strong>om</strong> fyrhjulsdriften är urkopplingsbar <strong>och</strong> är urkopplad.</div>
+    </div>
+  </div>
+</div>
+
+<!-- KIA -->
+<div class="card" id="kia" data-brand="kia">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Kia</div><div class="brand-sub">Sportage · Retona · Rochsta · Sorento</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-y"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">Sportage · Sportage Wagon<small>Retona · Rochsta</small></div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge 2H</span></div>
+      <div class="row-inst">Manöverspak i läge <strong>2H</strong>.</div>
+    </div>
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">Sorento 2,4 LX/EX<small>Sorento 2,5 CRDi LX/EX</small></div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge 2H</span></div>
+      <div class="row-inst">Reglage på instrumentpanelen i läge <strong>2H</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- LADA / VAZ -->
+<div class="card" id="lada" data-brand="lada vaz niva">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Lada / VAZ</div><div class="brand-sub">Niva</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Niva</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Diff ej inkopplad</span></div>
+      <div class="row-inst">Centerdifferentialspärr <strong>ej inkopplad</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAN -->
+<div class="card" id="man" data-brand="man lastbil">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">MAN</div><div class="brand-sub">Lastbilar 4x4 · 6x4 · 8x4/4</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">4x4 · 6x4 · 8x4/4</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Diff ej inkopplad</span></div>
+      <div class="row-inst">Längsgående och/eller differentialspärrar <strong>ej inkopplade</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAZDA -->
+<div class="card" id="mazda" data-brand="mazda">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Mazda</div><div class="brand-sub">323 · 626 · 6 MPS · CX-7/9 · E2000 · B2500/2600</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span><span class="tp tp-b"></span><span class="tp tp-y"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">323</div><div class="row-year">1990–1994</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Diff ej inkopplad</span></div>
+      <div class="row-inst">Centerdifferentialspärr <strong>ej inkopplad</strong>.</div>
+    </div>
+    <div class="row" data-tags="b">
+      <div class="row-hdr"><div class="row-model">626 Sedan · 626 Kombi</div><div class="row-year">1990–1996</div></div>
+      <div class="row-tags"><span class="tag t-b"><span class="td"></span>Friläge</span></div>
+      <div class="row-inst">Växel i <strong>friläge</strong>.</div>
+    </div>
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">6 MPS · CX-7 · CX-9<small>E2000 · B2500 · B2600</small></div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge 2H</span></div>
+      <div class="row-inst">Manöverspak i läge <strong>2H</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- MERCEDES-BENZ -->
+<div class="card" id="mercedes" data-brand="mercedes benz mercedes-benz">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Mercedes-Benz</div><div class="brand-sub">124/210 4-matic · ML · Geländewagen · MB transportbilar · Tunga lastbilar</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span><span class="tp tp-g"></span><span class="tp tp-y"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">124 4-matic</div><div class="row-year">1987–1991</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Test-läge</span></div>
+      <div class="row-inst">Rött reglage till höger i motorrum — vrid till läge <strong>"Test"</strong>.</div>
+    </div>
+    <div class="row" data-tags="av">
+      <div class="row-hdr"><div class="row-model">124 4-matic</div><div class="row-year">1992–1993</div></div>
+      <div class="row-tags"><span class="tag t-g"><span class="td"></span>Tändning av</span></div>
+      <div class="row-inst">Omkopplare höger bak i motorrum — dras ut och vrids till läge <strong>"Test"</strong>.<div class="obs"><strong>OBS!</strong> Tändningen ska vara avslagen vid omkoppling.</div></div>
+    </div>
+    <div class="row" data-tags="av b">
+      <div class="row-hdr"><div class="row-model">210 4-matic<small>ML 163, 164, 166</small></div><div class="row-year">1994–</div></div>
+      <div class="row-tags"><span class="tag t-g"><span class="td"></span>Tändning av</span><span class="tag t-b"><span class="td"></span>Friläge / Neutral</span></div>
+      <div class="row-inst">Tändningen <strong>avslagen</strong> vid bromskontroll. Växel i <strong>friläge/neutral</strong>.</div>
+    </div>
+    <div class="row" data-tags="av b">
+      <div class="row-hdr"><div class="row-model">117 · 118 · 176 · 177 · 203 · 204 · 205 · 206 · 211 · 212 · 213 · 220 · 238 · 257<small>Samtliga PB-modeller 2015–</small></div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-g"><span class="td"></span>Tändning av</span><span class="tag t-b"><span class="td"></span>Friläge / Neutral</span></div>
+      <div class="row-inst">Tändningen <strong>avslagen</strong> vid bromskontroll. Växel i <strong>friläge/neutral</strong>.<div class="obs"><strong>OBS!</strong> Chassinumrets 4–6 tecken anger typbeteckning/modell.</div></div>
+    </div>
+    <div class="row" data-tags="r 2h">
+      <div class="row-hdr"><div class="row-model">Geländewagen 460 · 461 · 463</div><div class="row-year">–1993</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge S (Strasse)</span><span class="tag t-r"><span class="td"></span>Diff ej inkopplad</span></div>
+      <div class="row-inst">Manöverspak i läge <strong>"S" = Strasse</strong> (landsväg). Differentialspärrar <strong>ej inkopplade</strong>.</div>
+    </div>
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Geländewagen 460 · 461 · 463</div><div class="row-year">1993–</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>4WD ej inkopplad</span><span class="tag t-r"><span class="td"></span>Diff ej inkopplad</span></div>
+      <div class="row-inst">Fyrhjulsdriften <strong>ej inkopplad</strong>. Längsgående och/eller tvärgående differentialspärrar <strong>ej inkopplade</strong>.</div>
+    </div>
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Transportbilar upp till 3,5 ton<small>MB 308, 310, 311, 312, 313, 314, 316, 408, 410, 412, 413, 414, 416</small></div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>4WD ej inkopplad</span><span class="tag t-r"><span class="td"></span>Diff ej inkopplad</span></div>
+      <div class="row-inst">Fyrhjulsdriften <strong>ej inkopplad</strong>. Längsgående och/eller tvärgående differentialspärrar <strong>ej inkopplade</strong>.</div>
+    </div>
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Transportbilar över 3,5 ton · Tunga lastbilar<small>MB 308–914 · MB 1013–5259 · 4x4, 6x4, 6x6, 8x4, 8x6, 8x8</small></div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>4WD ej inkopplad</span><span class="tag t-r"><span class="td"></span>Diff ej inkopplad</span></div>
+      <div class="row-inst">Fyrhjulsdriften <strong>ej inkopplad</strong>. Längsgående och/eller tvärgående differentialspärrar <strong>ej inkopplade</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- MINI -->
+<div class="card" id="mini" data-brand="mini">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Mini</div><div class="brand-sub">Countryman PHEV</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-b"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="b">
+      <div class="row-hdr"><div class="row-model">Countryman PHEV</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-b"><span class="td"></span>Neutral / Friläge</span></div>
+      <div class="row-inst">Auto: <strong>N-läge</strong> · Manuell: <strong>friläge</strong>.
+        <div class="obs"><strong>OBS!</strong> Gaspådrag får inte ske med rullarna igång.<br>Vissa modeller är utrustade med DSC (Dynamic Stability Control). DSC ska inaktiveras via reglage innan bromsprov — <strong>varningslampan för DSC ska lysa</strong>.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MITSUBISHI -->
+<div class="card" id="mitsubishi" data-brand="mitsubishi">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Mitsubishi</div><div class="brand-sub">Tredia · Space Wagon · Outlander · L200 · Pajero</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span><span class="tp tp-y"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Tredia · Space Wagon</div><div class="row-year">1985–1989</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Ej inkopplad</span></div>
+      <div class="row-inst">Fyrhjulsdriften <strong>ej inkopplad</strong>.</div>
+    </div>
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">Outlander</div><div class="row-year">–2006</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge 2WD</span></div>
+      <div class="row-inst">Reglage (mellan säten fram) i läge <strong>2WD</strong>. Håll sedan knapp märkt <strong>ASC/symbol</strong> (till vänster om ratt) intryckt i minst <strong>3 sekunder</strong> — indikeringslampa tänds på instrumentpanelen.</div>
+    </div>
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">L 200 · Pajero<small>Pajero Pinin 1,8 · Pajero Pinin 2,0 GDI</small></div><div class="row-year">2000 – 2001 / 2000 –</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge 2H</span></div>
+      <div class="row-inst">Manöverspak i läge <strong>2H</strong>.
+        <div class="obs"><strong>OBS!</strong> Saknas manöverspak har bilen konstant fyrhjulsdrift och <strong>får inte köras i rullbromsprovare</strong>.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NISSAN -->
+<div class="card" id="nissan" data-brand="nissan">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Nissan</div><div class="brand-sub">Prairie · Juke · Qashqai · X-Trail · King Cab · Navara · Patrol</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span><span class="tp tp-y"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Prairie 4WD</div><div class="row-year">1998</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Ej inkopplad</span></div>
+      <div class="row-inst">Fyrhjulsdriften <strong>ej inkopplad</strong>.</div>
+    </div>
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">Juke · Qashqai · Murano<small>X-Trail · Pathfinder</small></div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge 2WD</span></div>
+      <div class="row-inst">Reglage i läge <strong>2WD</strong>.</div>
+    </div>
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">King Cab · Double Cab · Navara · NP 300<small>Terrano · Patrol</small></div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge 2H / 2WD</span></div>
+      <div class="row-inst">Manöverspak/reglage i läge <strong>2H/2WD</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- OPEL -->
+<div class="card" id="opel" data-brand="opel">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Opel</div><div class="brand-sub">Campo · Frontera · Monterey</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Campo · Frontera · Monterey</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Ej inkopplad</span></div>
+      <div class="row-inst">Fyrhjulsdriften <strong>ej inkopplad</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- PORSCHE -->
+<div class="card" id="porsche" data-brand="porsche">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Porsche</div><div class="brand-sub">911 Carrera 4</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-g"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="av">
+      <div class="row-hdr"><div class="row-model">911 Carrera 4</div><div class="row-year">1989–1993</div></div>
+      <div class="row-tags"><span class="tag t-g"><span class="td"></span>Tändning av</span></div>
+      <div class="row-inst">Tändningen <strong>avslagen</strong> vid bromskontroll.</div>
+    </div>
+  </div>
+</div>
+
+<!-- RENAULT -->
+<div class="card" id="renault" data-brand="renault">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Renault</div><div class="brand-sub">Koleos · Trafic 4x4</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-y"></span><span class="tp tp-r"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">Koleos</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge 2WD</span></div>
+      <div class="row-inst">Reglage i läge <strong>2WD</strong>.</div>
+    </div>
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Trafic 4x4</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Ej inkopplad</span></div>
+      <div class="row-inst">Fyrhjulsdriften <strong>ej inkopplad</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ROVER -->
+<div class="card" id="rover" data-brand="rover">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Rover</div><div class="brand-sub">600Ti</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-b"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="b">
+      <div class="row-hdr"><div class="row-model">600Ti</div><div class="row-year">1995–1999</div></div>
+      <div class="row-tags"><span class="tag t-b"><span class="td"></span>Friläge</span></div>
+      <div class="row-inst">Växel i <strong>friläge</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SCANIA -->
+<div class="card" id="scania" data-brand="scania lastbil">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Scania</div><div class="brand-sub">Allhjulsdrivna · L/P/G/R/S-serie med klokoppling</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span><span class="tp tp-b"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Alla allhjulsdrivna modeller</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>4WD ej inkopplad</span><span class="tag t-r"><span class="td"></span>Diff ej inkopplad</span></div>
+      <div class="row-inst">Allhjulsdriften <strong>urkopplad</strong>. Differentialspärrar <strong>ej inkopplade</strong>.
+        <div class="obs"><strong>OBS!</strong> Första drivaxeln i boggin får <strong>inte lyftas</strong> vid bromsprovet — risk för skador på kardanaxelknut.</div>
+      </div>
+    </div>
+    <div class="row" data-tags="b">
+      <div class="row-hdr"><div class="row-model">L · P · G · R · S-serie<small>Med urkopplingsbar klokoppling på andra drivande axel</small></div><div class="row-year">2016–</div></div>
+      <div class="row-tags"><span class="tag t-b"><span class="td"></span>ESP-avaktivering</span></div>
+      <div class="row-inst">Hjulhastighetsskillnad mellan bakaxlar tillåts genom att avaktivera ESP-regleringen. Avaktivering sker enligt nedan:
+        <ol class="steps">
+          <li>Håll <strong>TC-strömställaren intryckt i mer än 6 sekunder men mindre än 9 sekunder</strong> — samtidigt som bromspedalen är nertryckt och framaxelns hjulhastighet inte överstiger 5 km/h.</li>
+          <li>Kontrollampa lyser när hjulhastighetsskillnad är tillåten (tandemdrift urkopplad).</li>
+          <li>Säkerställ att <strong>klokopplingen är urkopplad</strong> — när den är urkopplad <strong>släcks symbolen</strong> i instrumentpanelen.</li>
+        </ol>
+        <div class="obs"><strong>Information!</strong> Ibland är det nödvändigt att rulla lastbilen <strong>framåt och bakåt</strong> för att klokopplingen ska kopplas ur.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SEAT -->
+<div class="card" id="seat" data-brand="seat">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Seat</div><div class="brand-sub">Alhambra · Leon TT4</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-g"></span><span class="tp tp-b"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="av b">
+      <div class="row-hdr"><div class="row-model">Alhambra · Leon TT4</div><div class="row-year">2001–</div></div>
+      <div class="row-tags"><span class="tag t-g"><span class="td"></span>Tändning av</span><span class="tag t-b"><span class="td"></span>Friläge / Neutral</span></div>
+      <div class="row-inst">Tändningen <strong>avslagen</strong> vid bromskontroll. Växel i <strong>friläge/neutral</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ŠKODA -->
+<div class="card" id="skoda" data-brand="skoda škoda">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Škoda</div><div class="brand-sub">Octavia · Scout · Yeti · Karoq · Kodiaq · Superb</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-g"></span><span class="tp tp-b"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="av b">
+      <div class="row-hdr"><div class="row-model">Octavia 4x4 · Octavia Combi 4x4<small>Octavia Scout</small></div><div class="row-year">1999– / 2001–</div></div>
+      <div class="row-tags"><span class="tag t-g"><span class="td"></span>Tändning av</span><span class="tag t-b"><span class="td"></span>Friläge / Neutral</span></div>
+      <div class="row-inst">Tändningen <strong>avslagen</strong> vid bromskontroll. Växel i <strong>friläge/neutral</strong>.</div>
+    </div>
+    <div class="row" data-tags="av b">
+      <div class="row-hdr"><div class="row-model">Yeti · Karoq · Kodiaq<small>Superb · Superb Alldrive</small></div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-g"><span class="td"></span>Tändning av</span><span class="tag t-b"><span class="td"></span>Friläge / Neutral</span></div>
+      <div class="row-inst">Tändningen <strong>avslagen</strong> vid bromskontroll. Växel i <strong>friläge/neutral</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SSANGYONG -->
+<div class="card" id="ssangyong" data-brand="ssangyong">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">SsangYong</div><div class="brand-sub">Korando · Musso</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Korando<small>Musso med dieselmotor eller 2,3L bensinmotor</small></div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Ej inkopplad</span></div>
+      <div class="row-inst">Fyrhjulsdriften <strong>ej inkopplad</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- STEYR-DAIMLER-PUCH -->
+<div class="card" id="steyr" data-brand="steyr daimler puch">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Steyr-Daimler-Puch</div><div class="brand-sub">Alla modeller</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Alla modeller</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Ej inkopplad</span></div>
+      <div class="row-inst">Fyrhjulsdriften <strong>ej inkopplad</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SUBARU -->
+<div class="card" id="subaru" data-brand="subaru">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Subaru</div><div class="brand-sub">1800 4WD · Legacy · Leone · Columbus · Trendy</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">1800 4WD · 1800 4WD Pick-up<small>Columbus · E10</small></div><div class="row-year">1982–1990</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Ej inkopplad</span></div>
+      <div class="row-inst">Fyrhjulsdriften <strong>ej inkopplad</strong>.</div>
+    </div>
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Legacy 4WD · Trendy · J10 · J12<small>Leone 4WD · L18</small></div><div class="row-year">1985–1990</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Ej inkopplad</span></div>
+      <div class="row-inst">Fyrhjulsdriften <strong>ej inkopplad</strong>. Automatisk växellåda: reglage för <strong>4WD AUTO</strong> i frånläge.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SUZUKI -->
+<div class="card" id="suzuki" data-brand="suzuki">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Suzuki</div><div class="brand-sub">SJ · Jimny · Samurai · Vitara · Grand Vitara · SX4</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-y"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">SJ 410 · SJ 413 · SJ 419 Pickup · Jimny · Samuraj<small>Vitara · Grand Vitara · SX4</small></div><div class="row-year">–2012</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge 2H / 2WD</span></div>
+      <div class="row-inst">Om det finns manöverspak/-knapp för urkoppling av fyrhjulsdriften får bilen provas. Manöverspak/-knapp i läge <strong>2H/2WD</strong>.
+        <div class="obs"><strong>OBS! AllGrip (automatisk fyrhjulsdrift)</strong> — går inte att koppla ur och <strong>får inte provas i rullbromsprovare</strong>. Systemet finns på vissa bilar från 2008. Från 2013 är <em>alla</em> fyrhjulsdrivna Suzuki utrustade med AllGrip.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TESLA -->
+<div class="card" id="tesla" data-brand="tesla">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Tesla</div><div class="brand-sub">Model S · Model X</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-b"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="b">
+      <div class="row-hdr"><div class="row-model">Model S · Model X</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-b"><span class="td"></span>Neutral</span></div>
+      <div class="row-inst">Lägg växel i <strong>neutral</strong>. För att aktivera Parkeringsbromsen: använd <strong>(P) läge</strong> på växelspak.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOYOTA -->
+<div class="card" id="toyota" data-brand="toyota">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Toyota</div><div class="brand-sub">4-Runner · Hilux · Land Cruiser · Tercel · Corolla · Hiace · RAV-4</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">4-Runner · Hilux<small>Land-Cruiser (ej privatimport) · Land-Cruiser 70</small></div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Ej inkopplad</span></div>
+      <div class="row-inst">Fyrhjulsdriften <strong>ej inkopplad</strong>.</div>
+    </div>
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Tercel 4WD · Corolla 4WD<small>Hiace 4WD · Land-Cruiser 90 · RAV-4</small></div><div class="row-year">Tercel 1983–1988</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Ej inkopplad</span></div>
+      <div class="row-inst">Får provas <strong>om</strong> fyrhjulsdriften är urkopplingsbar <strong>och</strong> ej inkopplad.</div>
+    </div>
+  </div>
+</div>
+
+<!-- UNIMOG -->
+<div class="card" id="unimog" data-brand="unimog">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Unimog</div><div class="brand-sub">Alla modeller</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Alla modeller</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Ej inkopplad</span></div>
+      <div class="row-inst">Fyrhjulsdriften <strong>ej inkopplad</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- VOLKSWAGEN -->
+<div class="card" id="volkswagen" data-brand="volkswagen vw">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Volkswagen</div><div class="brand-sub">ID.4 · Passat · Bora/Golf · Tiguan · Sharan · Transporter · Touareg · Taro · LT</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-r"></span><span class="tp tp-b"></span><span class="tp tp-g"></span><span class="tp tp-y"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="b">
+      <div class="row-hdr"><div class="row-model">ID.4</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-b"><span class="td"></span>Friläge / Neutral</span></div>
+      <div class="row-inst">Växel i <strong>friläge/neutral</strong>.</div>
+    </div>
+    <div class="row" data-tags="r b">
+      <div class="row-hdr"><div class="row-model">Passat</div><div class="row-year">1981–1988</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Diff ej inkopplad</span><span class="tag t-b"><span class="td"></span>Friläge</span></div>
+      <div class="row-inst">Differentialspärrar <strong>ej inkopplade</strong>. Växel i <strong>friläge</strong>.</div>
+    </div>
+    <div class="row" data-tags="b">
+      <div class="row-hdr"><div class="row-model">Passat<small>Bilar UTAN Borg Warner/Haldexkoppling</small></div><div class="row-year">1997–2005</div></div>
+      <div class="row-tags"><span class="tag t-b"><span class="td"></span>Neutral / Friläge</span></div>
+      <div class="row-inst">Auto: <strong>N-läge</strong> · Manuell: <strong>friläge</strong>.</div>
+    </div>
+    <div class="row" data-tags="av b">
+      <div class="row-hdr"><div class="row-model">Passat · CC<small>Bilar MED Borg Warner/Haldexkoppling</small></div><div class="row-year">2005–</div></div>
+      <div class="row-tags"><span class="tag t-g"><span class="td"></span>Tändning av</span><span class="tag t-b"><span class="td"></span>Friläge / Neutral</span></div>
+      <div class="row-inst">Tändningen <strong>avslagen</strong> vid bromskontroll. Växel i <strong>friläge/neutral</strong>.</div>
+    </div>
+    <div class="row" data-tags="av b">
+      <div class="row-hdr"><div class="row-model">Bora · Golf · Tiguan · Sharan · Transporter 4-motion<small>Med Haldex- eller Borg/Wagnerkoppling. Transporter gäller även Caravelle och Multivan.</small></div><div class="row-year">Golf/Bora 1999– · Tiguan 2007– · Sharan 2001– · Transporter 2004–</div></div>
+      <div class="row-tags"><span class="tag t-g"><span class="td"></span>Tändning av</span><span class="tag t-b"><span class="td"></span>Friläge / Neutral</span></div>
+      <div class="row-inst">Auto: <strong>N-läge</strong> · Manuell: <strong>friläge</strong>.
+        <ol class="steps">
+          <li>Kör bilen så att <strong>framhjulen står på rullarna</strong>.</li>
+          <li>Stäng av motorn (tändningen avslagen) och vänta <strong>2 sekunder</strong>.</li>
+          <li>Genomför bromskontroll på <strong>framaxel</strong>, stanna sedan bromsprovaren.</li>
+          <li>Starta motorn och vänta ca <strong>5 sekunder</strong> så att tillräckligt undertryck skapas.</li>
+          <li>Kör bilen framåt tills <strong>bakhjulen står på rullarna</strong>.</li>
+          <li>Stäng av motorn och vänta <strong>2 sekunder</strong>.</li>
+          <li>Genomför bromskontroll på <strong>bakaxel</strong>, stanna sedan bromsprovaren.</li>
+          <li>Starta motorn, vänta ca <strong>5 sekunder</strong>, kör sedan ur bromsprovaren.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="row" data-tags="b">
+      <div class="row-hdr"><div class="row-model">Touareg<small>Med Torsendiff. UTAN diffspärr — identifieras genom att vridreglaget mellan sätena endast har två lägen</small></div><div class="row-year">2011–</div></div>
+      <div class="row-tags"><span class="tag t-b"><span class="td"></span>N-läge</span></div>
+      <div class="row-inst">Växel i <strong>N-läge</strong>.</div>
+    </div>
+    <div class="row" data-tags="av b">
+      <div class="row-hdr"><div class="row-model">Touareg<small>Med Haldex- eller Borg/Wagnerkoppling</small></div><div class="row-year">2011–</div></div>
+      <div class="row-tags"><span class="tag t-g"><span class="td"></span>Tändning av</span><span class="tag t-b"><span class="td"></span>Friläge / Neutral</span></div>
+      <div class="row-inst">Auto: <strong>N-läge</strong> · Manuell: <strong>friläge</strong>. Följ sedan 8-stegsförfarandet (samma som Bora/Golf ovan).</div>
+    </div>
+    <div class="row" data-tags="av b">
+      <div class="row-hdr"><div class="row-model">VW:s samtliga övriga modeller<small>Med Haldex- eller Borg/Wagnerkoppling</small></div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-g"><span class="td"></span>Tändning av</span><span class="tag t-b"><span class="td"></span>Friläge / Neutral</span></div>
+      <div class="row-inst">Auto: <strong>N-läge</strong> · Manuell: <strong>friläge</strong>. Följ 8-stegsförfarandet:
+        <ol class="steps">
+          <li>Kör bilen så att <strong>framhjulen står på rullarna</strong>.</li>
+          <li>Stäng av motorn (tändningen avslagen) och vänta <strong>2 sekunder</strong>.</li>
+          <li>Genomför bromskontroll på <strong>framaxel</strong>, stanna sedan bromsprovaren.</li>
+          <li>Starta motorn och vänta ca <strong>5 sekunder</strong> så att tillräckligt undertryck skapas.</li>
+          <li>Kör bilen framåt tills <strong>bakhjulen står på rullarna</strong>.</li>
+          <li>Stäng av motorn och vänta <strong>2 sekunder</strong>.</li>
+          <li>Genomför bromskontroll på <strong>bakaxel</strong>, stanna sedan bromsprovaren.</li>
+          <li>Starta motorn, vänta ca <strong>5 sekunder</strong>, kör sedan ur bromsprovaren.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="row" data-tags="r">
+      <div class="row-hdr"><div class="row-model">Taro</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-r"><span class="td"></span>Ej inkopplad</span></div>
+      <div class="row-inst">Fyrhjulsdriften <strong>ej inkopplad</strong>.</div>
+    </div>
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">LT 40 · LT 45</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Läge 2H</span></div>
+      <div class="row-inst">Manöverspak i läge <strong>2H</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- VOLVO -->
+<div class="card" id="volvo" data-brand="volvo">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Volvo</div><div class="brand-sub">S/V/XC · Laddhybrider · S80 Ambulans</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-g"></span><span class="tp tp-b"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="av b">
+      <div class="row-hdr"><div class="row-model">S40 · V40</div><div class="row-year">S40: 2004 · V40: 2013</div></div>
+      <div class="row-tags"><span class="tag t-g"><span class="td"></span>Tändning av</span><span class="tag t-b"><span class="td"></span>N-läge</span></div>
+      <div class="row-inst">Tändningen <strong>avslagen</strong> vid bromskontroll. Auto: <strong>N-läge</strong>.
+        <div class="obs"><strong>OBS!</strong> Om bilen är utrustad med automatisk ansättning av parkeringsbromsen ska den automatiska funktionen <strong>avaktiveras</strong> innan bromsprov. Se instruktion under Märkes- &amp; komponentspecifikt → Parkeringsbroms elmanövrering.</div>
+      </div>
+    </div>
+    <div class="row" data-tags="av b">
+      <div class="row-hdr"><div class="row-model">V50 · V/S60 · V/S90<small>XC40 · XC60 · XC90 · S80</small></div><div class="row-year">2004–</div></div>
+      <div class="row-tags"><span class="tag t-g"><span class="td"></span>Tändning av</span><span class="tag t-b"><span class="td"></span>N-läge</span></div>
+      <div class="row-inst">Tändningen <strong>avslagen</strong> vid bromskontroll. Auto: <strong>N-läge</strong>.</div>
+    </div>
+    <div class="row" data-tags="b">
+      <div class="row-hdr"><div class="row-model">Laddhybrider — alla modeller</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-b"><span class="td"></span>N-läge</span></div>
+      <div class="row-inst">Ställ växelväljaren i <strong>N-läge</strong> innan bromsprovaren startar — eldrivningen/el-broms bak kopplas då bort automatiskt.</div>
+    </div>
+    <div class="row" data-tags="av b">
+      <div class="row-hdr"><div class="row-model">XC70 · V70</div><div class="row-year">2003–</div></div>
+      <div class="row-tags"><span class="tag t-g"><span class="td"></span>Tändning av</span><span class="tag t-b"><span class="td"></span>N-läge</span></div>
+      <div class="row-inst">Tändningen <strong>avslagen</strong> vid bromskontroll. Auto: <strong>N-läge</strong>.
+        <div class="obs"><strong>Årsmodell:</strong> Se hallsidans Fordonsinformation → rubrik "Tillverkningsmånad". Alternativt via chassinummer där <strong>10:e tecknet är 3 eller högre</strong>.</div>
+      </div>
+    </div>
+    <div class="row" data-tags="av b">
+      <div class="row-hdr"><div class="row-model">S80 Ambulans</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-g"><span class="td"></span>Tändning av</span><span class="tag t-b"><span class="td"></span>N-läge</span></div>
+      <div class="row-inst">Tändningen <strong>avslagen</strong> vid bromskontroll. Auto: <strong>N-läge</strong>.
+        <div class="obs"><strong>OBS!</strong> Endast bilar med <strong>Borg Warner/Haldexkoppling</strong> får provas.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VOLVO LASTVAGNAR -->
+<div class="card" id="volvo-lb" data-brand="volvo lastvagnar lastbil lb">
+  <div class="card-hd" onclick="tog(this)">
+    <div class="hd-l"><div class="brand">Volvo Lastvagnar</div><div class="brand-sub">Lastbilar &gt;7 ton · FH/FM 6x4 · FMX med ATC</div></div>
+    <div class="hd-r"><div class="tp-row"><span class="tp tp-b"></span><span class="tp tp-y"></span></div><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card-bd">
+    <div class="row" data-tags="2h">
+      <div class="row-hdr"><div class="row-model">Alla lastbilar över 7 ton</div><div class="row-year">–</div></div>
+      <div class="row-tags"><span class="tag t-y"><span class="td"></span>Max 2,5 km/h</span></div>
+      <div class="row-inst">Högsta tillåtna provhastighet: <strong>2,5 km/h</strong>.</div>
+    </div>
+    <div class="row" data-tags="b">
+      <div class="row-hdr"><div class="row-model">FH/FM 6x4 Tandemdrift<small>FMX med ATC (automatiskt inkopplingsbar drift på framaxel)</small></div><div class="row-year">2015–</div></div>
+      <div class="row-tags"><span class="tag t-b"><span class="td"></span>ESP-avaktivering / Testläge</span></div>
+      <div class="row-inst">Gäller FH/FM med tandemdrift och lyftbar axel, samt FMX med ATC. Fordonet måste sättas i testläge. Avaktivering av ESP-reglering sker på samma sätt som Scania:
+        <ol class="steps">
+          <li>Håll <strong>TC-strömställaren intryckt i mer än 6 sekunder men mindre än 9 sekunder</strong> — bromspedal nertryckt, framaxelns hjulhastighet max 5 km/h.</li>
+          <li>Kontrollampa lyser när hjulhastighetsskillnad är tillåten (tandemdrift urkopplad).</li>
+          <li>Säkerställ att <strong>klokopplingen är urkopplad</strong> — symbolen i instrumentpanelen ska vara <strong>släckt</strong>.</li>
+        </ol>
+        <div class="obs"><strong>Information!</strong> Ibland behöver lastbilen rullas <strong>framåt och bakåt</strong> för att klokopplingen ska kopplas ur.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</div><!-- /main -->
+
+<script>
+const cards=[...document.querySelectorAll('.card')];
+const si=document.getElementById('si');
+const sx=document.getElementById('sx');
+const countRow=document.getElementById('countRow');
+const noRes=document.getElementById('noRes');
+const fBtns=[...document.querySelectorAll('.fb')];
+const FM={all:'',ej:'r',nl:'b',av:'av',['2h']:'2h'};
+let activeF='all',q='';
+
+function tog(hd){hd.closest('.card').classList.toggle('open')}
+
+function run(){
+  const ql=q.toLowerCase().trim();
+  let vis=0;
+  cards.forEach(card=>{
+    const brand=card.dataset.brand||'';
+    const name=card.querySelector('.brand').textContent.toLowerCase();
+    const sub=card.querySelector('.brand-sub').textContent.toLowerCase();
+    const rows=[...card.querySelectorAll('.row')];
+    const matchSearch=!ql||brand.includes(ql)||name.includes(ql)||sub.includes(ql);
+    if(!matchSearch){card.classList.add('hidden');return}
+    const token=FM[activeF];
+    let visRows=0;
+    rows.forEach(row=>{
+      const tags=(row.dataset.tags||'').split(' ');
+      const show=!token||tags.includes(token);
+      row.classList.toggle('hidden',!show);
+      if(show)visRows++;
+    });
+    const show=visRows>0;
+    card.classList.toggle('hidden',!show);
+    if(show){vis++;if(ql)card.classList.add('open')}
+  });
+  noRes.style.display=vis===0?'block':'none';
+  countRow.textContent=vis<cards.length?`${vis} av ${cards.length} märken`:'';
+}
+
+si.addEventListener('input',()=>{
+  q=si.value;
+  sx.classList.toggle('on',q.length>0);
+  if(!q)cards.forEach(c=>c.classList.remove('open'));
+  run();
+});
+sx.addEventListener('click',()=>{
+  si.value='';q='';
+  sx.classList.remove('on');
+  cards.forEach(c=>c.classList.remove('open'));
+  run();si.focus();
+});
+fBtns.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    fBtns.forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    activeF=btn.dataset.f;
+    run();
+  });
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&document.activeElement!==si){e.preventDefault();si.focus()}
+  if(e.key==='Escape')si.blur();
+});
+</script>
+</body>
+</html>
